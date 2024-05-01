@@ -62,7 +62,7 @@ exports.viewAllPolls = async (req, res) => {
       }
   
       // Check if the user has already voted for this poll
-      const existingVote = await Vote.findOne({ poll: pollId, user: "663025ef540085b79072146c" });
+      const existingVote = await Vote.findOne({ poll: pollId, user: req.user.id });
       if (existingVote) {
         return res.status(400).json({ error: 'You have already voted on this poll' });
       }
@@ -73,7 +73,7 @@ exports.viewAllPolls = async (req, res) => {
       }
   
       // Insert the vote into the votes table
-      await Vote.insertVote(pollId, "663025ef540085b79072146c", option);
+      await Vote.insertVote(pollId, req.user.id, option);
   
       // Respond with the updated poll
       res.status(200).json({ poll });
