@@ -1,9 +1,7 @@
-import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
-import AuthScreen from './screens/AuthScreen';
+import AuthMain from './screens/Auth/AuthMain';
 import HomeMain from './screens/Home/HomeMain';
-import  AuthContextProvider, { AuthContext }  from './context/ContextApi';
-import { useContext, useState } from 'react';
+import  AuthContextProvider from './context/ContextApi';
+import { StatusBar } from 'react-native';
 
 export default function App() {
 
@@ -11,7 +9,7 @@ export default function App() {
 
     return(
       <>
-        <AuthScreen/>
+        <AuthMain />
         <HomeMain/>
       </>
     )
