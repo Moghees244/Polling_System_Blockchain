@@ -28,30 +28,6 @@ const voterSchema = new mongoose.Schema({
     required: true,
     minlength: 8
   },
-  age: {
-    type: Number,
-    required: true,
-    min: [18, 'Minimum age should be 18']
-  },
-  gender: {
-    type: String,
-    enum: ['Male', 'Female', 'Other'],
-    required: true
-  },
-  city: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-    maxlength: 50
-  },
-  country: {
-    type: String,
-    required: true,
-    trim: true,
-    minlength: 2,
-    maxlength: 50
-  }
 });
 
 // Hash password before saving user to database
