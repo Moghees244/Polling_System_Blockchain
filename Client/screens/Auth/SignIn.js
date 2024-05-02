@@ -3,10 +3,11 @@ import { Alert, Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View 
 import { MaterialIcons } from '@expo/vector-icons';
 import ColorPallete from '../../constants/ColorPallete';
 import { AuthContext } from '../../context/ContextApi';
+import { signIn, viewPolls } from '../../util/ApiFetches';
 
 
 export default function SignIn({navigation}) {
-    const {currentUser, currentUserHandler}=useContext(AuthContext)
+    const {currentUser, currentUserHandler, tokenHandler, modifyPollingData}=useContext(AuthContext)
 
     const [email, setEmail] = useState('')
     const [password, setPassword] = useState('')
@@ -19,22 +20,20 @@ export default function SignIn({navigation}) {
         setPassword(text)
     }
 
-    const handlerSignIn = ()=>{
+    const handlerSignIn = async ()=>{
 
         if (email==='' || password==='') return alert('Please fill all the fields.')
 
         // API call to sign in
 
+        const response = await signIn(email, password)
+        currentUserHandler(response)
+        tokenHandler(response.token)
+        console.log(response)
 
-        console.log(email, password)
-        currentUserHandler(
-            {
-                id:1,
-                name:"John Doe",
-                email:email,
-                votedPolls:[]
-            }
-        )
+        const tempPollsData = await viewPolls(response.token)
+        modifyPollingData(tempPollsData)
+        console.log(tempPollsData.length)
     }
 
   return (
@@ -53,11 +52,11 @@ export default function SignIn({navigation}) {
             
             <View>
                 <Text style={{color:ColorPallete.themeColor, fontWeight:'bold', marginBottom:8}}>Email</Text>
-                <TextInput value={email} onChangeText={emailHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
+                <TextInput inputMode='email' value={email} onChangeText={emailHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
             </View>
             <View>
-                <Text style={{color:ColorPallete.themeColor, fontWeight:'bold',}}>Password</Text>
-                <TextInput value={password} onChangeText={passwordHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
+                <Text style={{color:ColorPallete.themeColor, fontWeight:'bold', marginBottom:8}}>Password</Text>
+                <TextInput secureTextEntry={true} value={password} onChangeText={passwordHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
             </View>
 
             <Pressable onPress={()=>{navigation.navigate('SignUp')}} style={{marginVertical:8, marginTop:16,}}>

@@ -4,13 +4,15 @@ import { MaterialIcons } from '@expo/vector-icons';
 import ColorPallete from '../../constants/ColorPallete';
 import { AuthContext } from '../../context/ContextApi';
 import * as LocalAuthentication from 'expo-local-authentication';
+import { vote } from '../../util/ApiFetches';
 
 export default function PollDetail({navigation, route}) {
-    const {pollingData, currentUser, currentUserHandler, modifyPollingData} = useContext(AuthContext);
+    const {token, pollingData, currentUser, currentUserHandler, modifyPollingData} = useContext(AuthContext);
     const [selected, setSelected] = useState(null);
 
     const pollData = route.params.pollData;
-    const alreadyVoted = currentUser.votedPolls.find((poll) => poll.pollId == pollData.id);
+    const options = Object.entries(pollData.options);
+    const alreadyVoted = currentUser.UserVotes.find((vote) => vote.poll == pollData.id);
 
     const handleNavigation = () => {
         navigation.goBack();
@@ -18,6 +20,7 @@ export default function PollDetail({navigation, route}) {
 
     const handleVote = async () => {
         // Check if a candidate is selected
+        // return
         if (selected == null) return;
 
         // Authenticate using fingerprint
@@ -30,22 +33,18 @@ export default function PollDetail({navigation, route}) {
             if (result.success) {
                 // If authentication is successful, proceed with the voting process
                 const voteData = {
-                    pollId: pollData.id,
-                    candidateId: selected,
+                    poll: pollData.id,
+                    option: selected,
                 };
                 currentUserHandler({
                     ...currentUser,
-                    votedPolls: [...currentUser.votedPolls, voteData],
+                    UserVotes: [...currentUser.UserVotes, voteData],
                 });
 
                 let temp = pollingData;
                 temp.forEach((poll) => {
                     if (poll.id == pollData.id) {
-                        poll.candidatesList.forEach((candidate) => {
-                            if (candidate.id == selected) {
-                                candidate.votes++;
-                            }
-                        });
+                        ++poll.options[selected]
                     }
                 });
                 modifyPollingData(temp);
@@ -58,26 +57,29 @@ export default function PollDetail({navigation, route}) {
         } catch (error) {
             Alert.alert('Authentication Error', error.message || 'Error during authentication.');
         }
+
+        const result = await vote(token, pollData.id, selected);
+        navigation.goBack();
     };
 
     const renderCandidatesList = (itemData) => {
         const handleSelection = () => {
             if (alreadyVoted) return;
 
-            setSelected(itemData.item.id);
+            setSelected(itemData.item[0]);
         };
 
-        let isSelected = selected == itemData.item.id || currentUser.votedPolls.find((poll) => poll.pollId == pollData.id && poll.candidateId == itemData.item.id);
+        let isSelected = selected == itemData.item[0] || currentUser.UserVotes.find((poll) => poll.poll == pollData.id && poll.option == itemData.item[0]);
 
         return (
             <Pressable onPress={handleSelection} style={[{flexDirection:'row', justifyContent:'space-between', alignItems:'center', backgroundColor:ColorPallete.themeColorTwo, marginBottom:10, borderRadius:16, padding:16}, isSelected && styles.selected]}>
                 <View style={{flexDirection:'row', alignItems:'center'}}>
                     <Text style={{fontSize:14, color:ColorPallete.textColor, margin:8}}>{itemData.index + 1}.</Text>
-                    <Text style={{fontWeight:'bold', fontSize:20, color:ColorPallete.textColor}}>{itemData.item.name}</Text>
+                    <Text style={{fontWeight:'bold', fontSize:20, color:ColorPallete.textColor}}>{itemData.item[0]}</Text>
                 </View>
                 <View style={{flexDirection:"row", alignItems:'center'}}>
                     <MaterialIcons name="poll" size={24} color={ColorPallete.textColor}/>
-                    <Text style={{fontSize:16, fontWeight:'bold', color:ColorPallete.textColor, marginLeft:4}}>{itemData.item.votes}</Text>
+                    <Text style={{fontSize:16, fontWeight:'bold', color:ColorPallete.textColor, marginLeft:4}}>{itemData.item[1]}</Text>
                 </View>
             </Pressable>
         )
@@ -92,9 +94,9 @@ export default function PollDetail({navigation, route}) {
                 </Pressable>
 
                 <View>
-                    <Text style={{fontSize:32, fontWeight:'bold', color:ColorPallete.themeColor, marginBottom:8}}>{pollData.title}</Text>
+                    <Text style={{fontSize:32, fontWeight:'bold', color:ColorPallete.themeColor, marginBottom:8}}>{pollData.question}</Text>
                     <Text style={{fontSize:14, color:ColorPallete.textColor, marginBottom:16}}>Placing a vote is an immutable process and will not be undone in any case.</Text>
-                    <Text style={{fontSize:16, fontWeight:'bold', color:ColorPallete.textColor, marginBottom:16}}>Select Candidate <Text style={{color:ColorPallete.themeColor}}>({pollData.candidatesList.length})</Text></Text>
+                    <Text style={{fontSize:16, fontWeight:'bold', color:ColorPallete.textColor, marginBottom:16}}>Select Candidate <Text style={{color:ColorPallete.themeColor}}>({options.length})</Text></Text>
                 </View>
             </View>
         );
@@ -115,9 +117,9 @@ export default function PollDetail({navigation, route}) {
     return (
         <View style={styles.container}>
             <FlatList
-                data={pollData.candidatesList}
+                data={options}
                 renderItem={renderCandidatesList}
-                keyExtractor={(item) => item.id}
+                keyExtractor={(item) =>  Math.floor(Math.random() * 1000) + 1}
                 showsVerticalScrollIndicator={false}
                 ListHeaderComponent={headerComponents}
                 ListFooterComponent={footerComponents}

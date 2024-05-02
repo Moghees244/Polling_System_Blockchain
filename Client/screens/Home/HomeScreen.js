@@ -8,25 +8,27 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 export default function HomeScreen({navigation}) {
 
     const {pollingData} = useContext(AuthContext)
+    
 
     const handleNavigation = (pollData)=>{
         navigation.navigate('PollDetail', {pollData})
     }
 
     const renderPollingCards = (itemData)=>{
+        const options = Object.entries(itemData.item.options);
 
         return (
             <Pressable onPress={()=>handleNavigation(itemData.item)} style={{flex:1, flexDirection:'row', justifyContent:'space-between', alignItems:'center', backgroundColor:ColorPallete.themeColorTwo, marginBottom:16, borderRadius:16, padding:16}}>
                 <View>
-                    <Text style={{marginBottom:16, color:ColorPallete.themeColor, fontWeight:'bold', fontSize:20}}>{itemData.item.title}</Text>
+                    <Text style={{marginBottom:16, color:ColorPallete.themeColor, fontWeight:'bold', fontSize:20}}>{itemData.item.question}</Text>
                     <View style={{flexDirection:'row'}}>
                         <View style={{flexDirection:'row', alignItems:'center', marginRight:12}}>
-                            <MaterialIcons name="person" style={{ marginRight:4}} size={20} color={ColorPallete.textColor} />
-                            <Text style={{fontWeight:'bold', fontSize:14, color:ColorPallete.textColor}}>{itemData.item.candidatesList.length}</Text>
+                            <MaterialIcons name="format-list-bulleted" style={{ marginRight:4}} size={20} color={ColorPallete.textColor} />
+                            <Text style={{fontWeight:'bold', fontSize:14, color:ColorPallete.textColor}}>{options.length}</Text>
                         </View>
                         <View style={{flexDirection:"row", alignItems:'center'}}>
                             <MaterialIcons name="calendar-today" style={{ marginRight:4}} size={18} color={ColorPallete.textColor} />
-                            <Text style={{fontWeight:'bold', color:ColorPallete.textColor, fontSize:14}}>{itemData.item.date}</Text>
+                            <Text style={{fontWeight:'bold', color:ColorPallete.textColor, fontSize:14}}>{itemData.item.time.slice(0,10)}</Text>
                         </View>
                     </View>
                 </View>
@@ -50,7 +52,7 @@ export default function HomeScreen({navigation}) {
     <View style={styles.container}>
         
         {
-            pollingData.length == 0 ?
+            pollingData && pollingData.length == 0 ?
             <>
                 {header()}
                 <View style={{flex:1, alignItems:'center', justifyContent:'center'}}>

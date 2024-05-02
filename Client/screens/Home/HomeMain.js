@@ -28,9 +28,9 @@ export default function HomeMain() {
 
     const {pollingData, modifyPollingData, currentUser} = useContext(AuthContext)
 
-    useEffect(()=>{
-        modifyPollingData(DUMMY_DATA)
-    },[])
+    // useEffect(()=>{
+    //     modifyPollingData(DUMMY_DATA)
+    // },[])
 
   return (
     <>

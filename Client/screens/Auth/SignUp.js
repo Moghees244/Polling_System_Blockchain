@@ -3,6 +3,7 @@ import { Image, Pressable, ScrollView, StyleSheet, Text, TextInput, View } from 
 import { MaterialIcons } from '@expo/vector-icons';
 import ColorPallete from '../../constants/ColorPallete';
 import { AuthContext } from '../../context/ContextApi';
+import { signUpp } from '../../util/ApiFetches';
 
 
 export default function SignUp({navigation}) {
@@ -24,7 +25,7 @@ export default function SignUp({navigation}) {
         setName(text)
     }
 
-    const handlerSignUp = ()=>{
+    const handlerSignUp = async ()=>{
 
         if (email==='' || password==='' || name==='') return alert('Please fill all the fields.')
 
@@ -32,14 +33,9 @@ export default function SignUp({navigation}) {
 
 
         console.log(email, password, name)
-        currentUserHandler(
-            {
-                id:1,
-                name:"John Doe",
-                email:email,
-                votedPolls:[]
-            }
-        )
+        const response = await signUpp(email, password, name)
+        console.log(response)
+        navigation.goBack()
     }
 
   return (
@@ -62,11 +58,11 @@ export default function SignUp({navigation}) {
             </View>
             <View>
                 <Text style={{color:ColorPallete.themeColor, fontWeight:'bold', marginBottom:8}}>Email</Text>
-                <TextInput value={email} onChangeText={emailHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
+                <TextInput inputMode='email' value={email} onChangeText={emailHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
             </View>
             <View>
-                <Text style={{color:ColorPallete.themeColor, fontWeight:'bold',}}>Password</Text>
-                <TextInput value={password} onChangeText={passwordHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
+                <Text style={{color:ColorPallete.themeColor, fontWeight:'bold', marginBottom:8}}>Password</Text>
+                <TextInput secureTextEntry={true} value={password} onChangeText={passwordHandler} placeholderTextColor={ColorPallete.themeColor} style={{fontSize:16, backgroundColor:ColorPallete.themeColorTwo, padding:18, borderRadius:8, marginBottom:8, color:ColorPallete.textColor}} placeholder=""  />
             </View>
 
 

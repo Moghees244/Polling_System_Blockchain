@@ -4,6 +4,7 @@ export const AuthContext = createContext();
 
 export default function AuthContextProvider({ children }) {
 
+  const [token, setToken] = useState(null)
   const [pollingData, setPollingData]=useState(null)
   const [currentUser, setCurrentUser] = useState(null)
 
@@ -15,14 +16,20 @@ export default function AuthContextProvider({ children }) {
       setCurrentUser(user)
     }
 
+    const tokenHandler = (token)=>{
+      setToken(token)
+    }
+
 
   return (
     <AuthContext.Provider
       value={{
         pollingData,
         currentUser,
+        token,
         modifyPollingData,
-        currentUserHandler
+        currentUserHandler,
+        tokenHandler
       }}
     >
       {children}
