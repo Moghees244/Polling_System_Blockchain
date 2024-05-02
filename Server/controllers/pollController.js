@@ -31,9 +31,30 @@ exports.deletePoll = async (req, res) => {
   
 exports.viewActivePolls = async (req, res) => {
   try {
-    // Find all active polls
-    const activePolls = await Poll.find({ status: 'active' });
-    res.status(200).json({ activePolls });
+    const polls = await Poll.find();
+    // Define an object to store vote counts for each option across all polls
+    const aggregatedVotes = [];
+    // Loop through each poll
+    for (const poll of polls) {
+        // Initialize an object to store vote counts for each option of the current poll
+        const pollData = {
+            id: poll._id,
+            question: poll.question,
+            time: poll.startTime,
+            options: {}
+        };
+        // Loop through each option in the poll
+        for (const option of poll.options) {
+            // Count votes for the current option in the current poll
+            const voteCount = await Vote.countDocuments({ poll: poll._id, option: option });
+        
+            // Add the vote count to the pollData object
+            pollData.options[option] = voteCount;
+        }
+        // Add the pollData object to the aggregatedVotes object
+        aggregatedVotes.push(pollData);    }
+
+    res.status(200).json( aggregatedVotes );
   } catch (error) {
     res.status(500).json({ error: error.message });
   }
@@ -77,35 +98,6 @@ exports.viewAllPolls = async (req, res) => {
   
       // Respond with the updated poll
       res.status(200).json({ poll });
-    } catch (error) {
-      res.status(500).json({ error: error.message });
-    }
-  };
-
-  exports.adminView = async (req, res) => {
-    try {
-      // Fetch all polls
-      const polls = await Poll.find();
-  
-      // Define an object to store vote counts for each option across all polls
-      const aggregatedVotes = {};
-  
-      // Loop through each poll
-      for (const poll of polls) {
-        // Loop through each option in the poll
-        for (const option of poll.options) {
-          // Count votes for the current option in the current poll
-          const voteCount = await Vote.countDocuments({ poll: poll._id, option: option });
-  
-          // Add the vote count to the aggregatedVotes object
-          if (!aggregatedVotes[poll._id]) {
-            aggregatedVotes[poll._id] = {};
-          }
-          aggregatedVotes[poll._id][option] = voteCount;
-        }
-      }
-  
-      res.status(200).json({ polls: aggregatedVotes });
     } catch (error) {
       res.status(500).json({ error: error.message });
     }

@@ -2,9 +2,11 @@ const express = require('express');
 const { connect_database } = require('./config/database');
 const voterRoutes = require('./routes/voterRoutes');
 const adminRoutes = require('./routes/adminRoutes');
+const cors = require('cors');
 
 const app = express();
 
+app.use(cors());
 // Connect to the database
 connect_database();
 
