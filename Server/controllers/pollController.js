@@ -1,11 +1,14 @@
 const Poll = require('../models/pollModel');
 const Vote = require('../models/voteModel');
+const contractModel = require('../models/contractModel')
 
 // Controller method for creating a new poll
 exports.createPoll = async (req, res) => {
   try {
     const { name, question, options, duration } = req.body;
     const poll = await Poll.insertPoll(name, question, options, duration);
+    const optionsArray = options.split(','); // Assuming options are sent as comma-separated values
+    const receipt = await contractModel.createPoll(question, optionsArray);
     res.status(201).json({ poll });
   } catch (error) {
     res.status(400).json({ error: error.message });
@@ -95,6 +98,7 @@ exports.viewAllPolls = async (req, res) => {
   
       // Insert the vote into the votes table
       await Vote.insertVote(pollId, req.user.id, option);
+      const receipt = await contractModel.vote(pollId, option);
   
       // Respond with the updated poll
       res.status(200).json({ poll });
