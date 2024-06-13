@@ -7,7 +7,7 @@ const {authenticateUser, authenticateAdmin} = require('../middlewares/authMiddle
 
 router.post('/login', adminController.adminLogin);
 
-router.route('/createPoll').post(authenticateAdmin, pollController.createPoll);
+router.route('/createPoll').post(/* authenticateAdmin, */ pollController.createPoll);
 router.route('/deletePoll').post(authenticateAdmin, pollController.deletePoll);
 router.route('/viewPolls').get(authenticateAdmin, pollController.viewAllPolls);
 router.route('/results').get(authenticateAdmin, pollController.viewActivePolls);

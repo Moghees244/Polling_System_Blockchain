@@ -1,0 +1,74 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Simple Storage</title>
+</head>
+<body>
+    <h1>Simple Storage</h1>
+    <form method="POST" action="/set">
+        <label for="value">Set Value:</label>
+        <input type="text" id="value" name="value" required>
+        <button type="submit">Submit</button>
+    </form>
+    <br>
+    <form method="GET" action="/get">
+        <button type="submit">Get Value</button>
+    </form>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Voting System</title>
+</head>
+<body>
+    <h1>Voting System</h1>
+
+    <h2>Create Poll</h2>
+    <form method="POST" action="/createPoll">
+        <label for="question">Question:</label>
+        <input type="text" id="question" name="question" required>
+        <br>
+        <label for="options">Options (comma separated):</label>
+        <input type="text" id="options" name="options" required>
+        <br>
+        <button type="submit">Create Poll</button>
+    </form>
+
+    <h2>Vote</h2>
+    <form method="POST" action="/vote">
+        <label for="pollId">Poll ID:</label>
+        <input type="text" id="pollId" name="pollId" required>
+        <br>
+        <label for="optionId">Option ID:</label>
+        <input type="text" id="optionId" name="optionId" required>
+        <br>
+        <button type="submit">Vote</button>
+    </form>
+
+    <h2>End Poll</h2>
+    <form method="POST" action="/endPoll">
+        <label for="pollId">Poll ID:</label>
+        <input type="text" id="pollId" name="pollId" required>
+        <br>
+        <button type="submit">End Poll</button>
+    </form>
+
+    <h2>View Poll</h2>
+    <form method="GET" action="/viewPoll">
+        <label for="pollId">Poll ID:</label>
+        <input type="text" id="pollId" name="pollId" required>
+        <br>
+        <button type="submit">View Poll</button>
+    </form>
+
+    <h2>Get Results</h2>
+    <form method="GET" action="/getResults">
+        <label for="pollId">Poll ID:</label>
+        <input type="text" id="pollId" name="pollId" required>
+        <br>
+        <button type="submit">Get Results</button>
+    </form>
+</body>
+</html>

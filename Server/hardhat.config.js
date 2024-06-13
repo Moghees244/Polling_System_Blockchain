@@ -2,7 +2,7 @@ require('@nomiclabs/hardhat-waffle');
 const { task } = require("hardhat/config");
 
 // Replace with your actual private key
-const PRIVATE_KEY = '455c4ea3ed26b44f594dfbcacf2eded5055342d06c11695a6d86bcdd1e13d155';
+const PRIVATE_KEY = '747b7d5a9ee9ef419dba1e0e5d94aa3faac4582dbae9238d3d45b621837944ec';
 
 module.exports = {
   solidity: "0.8.0",
