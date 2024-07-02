@@ -1,7 +1,28 @@
-# Build and Deploy a Web3 Crowdfunding Platform (Kickstarter) As Your First Blockchain Application
-![Crowdfunding](https://i.ibb.co/k6pj0Qt/htum-6.png)
 
-### [🌟 Become a top 1% Next.js 13 developer in only one course](https://jsmastery.pro/next13)
-### [🚀 Land your dream programming job in 6 months](https://jsmastery.pro/masterclass)
+# VoteChain
 
-### Launch your development career with project-based coaching on [JS Mastery Pro](https://www.jsmastery.pro).
+VoteChain is a decentralized polling system developed on top of Ethereum blockchain. It is integrated with crypto wallets i.e. MetaMask, Ganache and deep learning biometric authentication model for heightened security.
+## Installation
+
+Install VoteChain App with npm
+
+```bash
+  git clone https://github.com/Moghees244/Polling_System_Blockchain.git
+  cd ./Polling_System_Blockchain/Client
+  npm install
+```
+
+## Run
+
+Run the project by running the following command
+
+```bash
+  npx expo start
+```
+    
+## Screenshots
+
+![App Screenshot](./Client/1.png)
+
+![App Screenshot](./Client/2.png)
+
